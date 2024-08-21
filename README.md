@@ -1,7 +1,7 @@
+<div align="center">
+
 # nonebot-plugin-tea-silencer
 自动化、高自定义的违禁词检测、升级屏蔽级别插件
-
-<div align="center">
 
 _✨ 为美好群聊献上屏蔽 ✨_
 
