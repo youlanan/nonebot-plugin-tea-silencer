@@ -12,7 +12,8 @@ from datetime import datetime, timedelta
 from typing import Optional
 from nonebot.log import logger
 from nonebot.params import EventToMe
-from nonebot import get_driver, on_message
+from nonebot import get_driver, on_command
+from nonebot.params import CommandArg
 from nonebot.message import event_preprocessor
 from nonebot.exception import IgnoredException
 from nonebot.permission import SUPERUSER
@@ -58,7 +59,7 @@ async def 储存JSON(path: Path, file: str, datas: dict = {}, 自检: Optional[b
             return
         await 路径自检(path)
         await 写入JSON(path, datas)
-        await tolog(f"好耶！{file} 储存完毕！")
+        await tolog(f"好耶！{file} 储存更新完毕！")
     except Exception as e:
         await tolog(f"不好了喵！储存 {file} 出错了喵", e)
 
@@ -125,19 +126,8 @@ class GlobalVar:
     ''' **10: "棉花" = 从分贝10开始使用“棉花词库”进行回应 为None时关闭** '''
 
 
-    # 涩涩, 建政, 非法, 广告, 侮辱 = None, None, None, None, None
-    # ''' 示例: **if 涩涩.search(text):** '''
-    
-    # 提示, 棉花, 阴阳, 飞马 = [], [], [], []
-    # ''' 示例: **choice(提示)** '''
-    
-    # 用户分贝, 群分贝 = {}, {} 不使用，本地储存时仅储存所需内容（xx分贝以上）
-    # ''' 永久化储存 {id: [0分贝, 1整数时间], 级别} '''
 
-
-
-
-async def 用户审查(user_id: str, group_id: Optional[int] = None) -> str | None:
+async def 用户审查(user_id: str, group_id: Optional[str] = None) -> str | None:
     ''' 若在黑名单则屏蔽 '''
     
     群截止 = GlobalVar.群缓存.get(group_id, [0, 0])[1] if group_id else 0
@@ -168,10 +158,7 @@ async def 用户审查(user_id: str, group_id: Optional[int] = None) -> str | No
     return None
 
 
-
-
-
-async def 消息审查(text: str, user_id: str, group_id: Optional[int] = None) -> list:
+async def 消息审查(text: str, user_id: str, group_id: Optional[str] = None) -> list:
     ''' 对有害信息进行相关处理 '''
     # 计算该信息分贝值
     分贝 = sum(GlobalVar.词库分贝[key] for key, regex in GlobalVar.匹配词库.items() if regex.search(text))
@@ -179,6 +166,7 @@ async def 消息审查(text: str, user_id: str, group_id: Optional[int] = None) 
         return []
 
     await tolog("已拦截不安全的消息喵")
+    group_id = str(group_id) if group_id else None
 
     # 初始化缓存（若不存在）
     用户缓存 = GlobalVar.用户缓存.setdefault(user_id, [0, 0, None])
@@ -242,6 +230,7 @@ async def 检测(bot: Bot, event: MessageEvent, at: bool = EventToMe()):
     text = event.get_plaintext().strip()
     if not text: return
     group_id = event.group_id if isinstance(event, GroupMessageEvent) else None
+    group_id = str(group_id) if group_id else None
     user_id = event.get_user_id()
     
     if echo := await 用户审查(user_id, group_id):
@@ -252,12 +241,197 @@ async def 检测(bot: Bot, event: MessageEvent, at: bool = EventToMe()):
         for msg in echo:
             await bot.send(event = event, message = msg)
         raise IgnoredException("已拦截不安全的消息")
+
+
+
+ban = on_command("ban",
+                aliases = {"消音", "屏蔽"},
+                permission = SUPERUSER)
+
+
+@ban.handle()
+async def _(args: Message = CommandArg()):
+    if text := args.extract_plain_text():
+        text = text.strip()
+
+        async def 解析参数(text: str) -> tuple[int, list[str], list[str]]:
+            时间正则 = re.compile(r't\s*(\d{8}|\d{12})')  # 匹配8或12位的时间整数
+            群聊正则 = re.compile(r'g\s*(\d[\d\s\W]*)')   # 匹配字母g后所有连贯的数字和符号
+            用户正则 = re.compile(r'u\s*(\d[\d\s\W]*)')   # 匹配字母u后所有连贯的数字和符号
+
+            时间匹配 = 时间正则.search(text)
+            if not 时间匹配:
+                await ban.finish("\n参数错误: 缺少时间戳或格式不正确。\n正确示例: t202509010030 或 t20250901\n")
+
+            时间字符串 = 时间匹配.group(1)
+            if len(时间字符串) == 8:  # 如果是8位，自动补齐成12位
+                时间字符串 += "0000"
+
+            时间 = int(时间字符串)
+
+            群聊ID列表 = [str(int(g)) for match in 群聊正则.findall(text) for g in re.findall(r'\d+', match)]
+            用户ID列表 = [str(int(u)) for match in 用户正则.findall(text) for u in re.findall(r'\d+', match)]
+
+            if not 群聊ID列表 and not 用户ID列表:
+                await ban.finish("\n参数错误: 至少需要一个群聊ID或用户ID。\n正确示例: /ban t20250901 g123456 u123456\n")
+
+            return 时间, 群聊ID列表, 用户ID列表
+
+        async def 更新屏蔽(缓存: dict, ID列表: list[str], 时间: int) -> None:
+            for 鸡 in ID列表:
+                if 鸡 not in 缓存:
+                    缓存[鸡] = [0, 0, None]
+                缓存[鸡][1] = 时间
+
+        时间, 群聊ID列表, 用户ID列表 = await 解析参数(text)
+
+        if 群聊ID列表 and len(群聊ID列表) > 0:
+            await 更新屏蔽(GlobalVar.群缓存, 群聊ID列表, 时间)
+            await 缓存本地化(GlobalVar.记忆阈值, GlobalVar.群缓存, "黑子窝")
+            await ban.send(f"成功对 {len(群聊ID列表)} 个群聊进行消音处理！")
+
+        if 用户ID列表 and len(用户ID列表) > 0:
+            await 更新屏蔽(GlobalVar.用户缓存, 用户ID列表, 时间)
+            await 缓存本地化(GlobalVar.记忆阈值, GlobalVar.用户缓存, "小黑子")
+            await ban.finish(f"成功对 {len(用户ID列表)} 个用户进行消音处理！")
     
+    await ban.finish(
+        "\n参数错误: 如果你想批量封禁 群聊123 和 用户456 到 2025年9月1日" \
+        "，则应输入：\n/ban t20250901 g123 u456\n")
 
 
+unban = on_command("unban",
+                aliases = {"deban", "解除屏蔽", "解除消音"},
+                permission = SUPERUSER)
 
 
+@unban.handle()
+async def _(args: Message = CommandArg()):
+    if text := args.extract_plain_text():
+        text = text.strip()
 
+        async def 解析参数(text: str) -> tuple[list[str], list[str]]:
+            群聊正则 = re.compile(r'g\s*(\d[\d\s\W]*)')
+            用户正则 = re.compile(r'u\s*(\d[\d\s\W]*)')
+
+            # 提取群聊ID列表
+            群聊ID列表 = [str(int(g)) for match in 群聊正则.findall(text) for g in re.findall(r'\d+', match)]
+
+            # 提取用户ID列表并转换为字符串
+            用户ID列表 = [str(int(u)) for match in 用户正则.findall(text) for u in re.findall(r'\d+', match)]
+
+            if not 群聊ID列表 and not 用户ID列表:
+                await unban.finish("\n参数错误: 至少需要一个群聊ID或用户ID。\n正确示例: /unban g123456 u123456\n")
+
+            return 群聊ID列表, 用户ID列表
+
+        async def 解除屏蔽(缓存: dict, ID列表: list[str]) -> None:
+            no = ''
+            for 尼 in ID列表:
+                if 尼 not in 缓存:
+                    no += f'{尼} '
+                else:
+                    del 缓存[尼]
+            return no
+        
+        群聊ID列表, 用户ID列表 = await 解析参数(text)
+
+        if 群聊ID列表 and len(群聊ID列表) > 0:
+            no = await 解除屏蔽(GlobalVar.群缓存, 群聊ID列表)
+            await 缓存本地化(GlobalVar.记忆阈值, GlobalVar.群缓存, "黑子窝")
+            await unban.send(f"群聊：{no}未被拦截，请检查输入") if no else await unban.send(f"群聊成功解除消音！")
+
+        if 用户ID列表 and len(用户ID列表) > 0:
+            no = await 解除屏蔽(GlobalVar.用户缓存, 用户ID列表)
+            await 缓存本地化(GlobalVar.记忆阈值, GlobalVar.用户缓存, "小黑子")
+            await unban.finish(f"用户：{no}未被拦截，请检查输入") if no else await unban.finish(f"用户成功解除消音！")
+        
+        return
+
+    await unban.finish(
+        "\n参数错误: 如果你想批量解封 群聊123 和 用户456、789" \
+        "，则应输入：\n/unban g123 u456 789\n")
+
+
+addf = on_command("addf",
+                aliases = {"添加屏蔽词", "添加消音词"},
+                permission = SUPERUSER)
+
+
+@addf.handle()
+async def _(args: Message = CommandArg()):
+    if text := args.extract_plain_text():
+        text = text.strip()
+
+        async def 解析参数(text: str, 匹配词库: dict) -> tuple[str, list[str]]:
+            参数列表 = text.split()
+
+            if not 参数列表:
+                await addf.finish("指令参数不能为空")
+
+            第一参数 = 参数列表[0]
+
+            if 第一参数 not in 匹配词库:
+                await addf.finish(f"\n未指定要添加的词库！\n如果你想向涩涩词库中添加一些屏蔽词，则应输入：\n/addf 涩涩 xx xx\n")
+
+            剩余参数 = 参数列表[1:] if len(参数列表) > 1 else []
+
+            return 第一参数, 剩余参数
+
+        async def 合并去重(list1: list, list2: list) -> list:
+            汇总 = list1 + list2
+            去重 = list(dict.fromkeys(汇总))
+            return 去重
+
+        第一参数, 追加词库 = await 解析参数(text, GlobalVar.匹配词库)
+        if 追加词库:
+            原词库 = await 载入消音词(第一参数)
+            新词库 = await 合并去重(原词库, 追加词库)
+            GlobalVar.匹配词库[第一参数] = re.compile('|'.join(map(re.escape, 新词库)))
+            path: Path = GlobalVar.词库目录 / 'filter' / f'{第一参数}.json'
+            await 储存JSON(path, 第一参数, {f"{第一参数}": 新词库})
+            tolog(f"已向 {第一参数} 词库中新增了 {len(追加词库)} 个消音词")
+            await addf.finish(f"已向 {第一参数} 词库中新增了 {len(追加词库)} 个消音词")
+
+    await addf.finish(
+        "\n参数错误: 如果你想批量添加屏蔽词，则应输入：\n/addf 涩涩 xx xx\n")
+
+
+delf = on_command("delf",
+                aliases = {"删除屏蔽词", "删除消音词"},
+                permission = SUPERUSER)
+
+
+@delf.handle()
+async def _(args: Message = CommandArg()):
+    if text := args.extract_plain_text():
+        text = text.strip()
+
+        async def 解析参数(text: str) -> list:
+            参数列表 = text.split()
+
+            if not 参数列表:
+                await delf.finish("指令参数不能为空")
+
+            return 参数列表
+
+        删除词库 = await 解析参数(text)
+        if 删除词库:
+            改 = 0
+            for key in GlobalVar.匹配词库:
+                校对 = 词库 = await 载入消音词(key)
+                新词库 = [x for x in 词库 if x not in 删除词库]
+                if 新词库 == 校对:
+                    continue
+                改 += 1
+                GlobalVar.匹配词库[key] = re.compile('|'.join(map(re.escape, 新词库)))
+                path: Path = GlobalVar.词库目录 / 'filter' / f'{key}.json'
+                await 储存JSON(path, key, {f"{key}": 新词库})
+            tolog(f"删除消音词操作成功！共修改 {改} 个词库。")
+            await delf.finish(f"删除消音词操作成功！共修改 {改} 个词库。")
+
+    await delf.finish(
+        "\n参数错误: 如果你想批量删除屏蔽词，则应输入：\n/delf xx xx\n")
 
 
 
@@ -279,7 +453,7 @@ async def 载入消音词(file: str) -> list:
         content = await 读取JSON(path)
         words = content[file]
         await tolog(f"载入 {file} 消音词 x{len(words)}！")
-        if not words or len(words) >= 0:
+        if not words or len(words) <= 0:
             return ["test1消音"]
         return words
     except Exception as e:
@@ -300,7 +474,9 @@ async def 载入用户数据(file: str) -> dict:
         return {}
 
 
+
 driver = get_driver()
+
 
 @driver.on_startup
 async def _():
