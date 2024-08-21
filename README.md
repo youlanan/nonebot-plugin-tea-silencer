@@ -1,11 +1,13 @@
 # nonebot-plugin-tea-silencer
 自动化、高自定义的违禁词检测、升级屏蔽级别插件
 
+<div align="center">
+
 _✨ 为美好群聊献上屏蔽 ✨_
 
 <img src="https://img.shields.io/badge/python-3.12+-blue.svg" alt="python">
 
-
+</div>
 
 ## 🌱 介绍
 
