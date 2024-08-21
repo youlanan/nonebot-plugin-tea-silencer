@@ -9,6 +9,12 @@ from typing import Set, Any, Dict
 
 
 class ConfigModel(BaseModel):
+    # NB的超管配置
+    superusers: Set[str] = []
+    
+    # 超管忽略
+    superusers_ignore: bool = True
+    
     # 消息检查开关 为True时禁用插件
     silencer_off: bool = False
     
@@ -24,27 +30,37 @@ class ConfigModel(BaseModel):
     silencer_config: str = '''
         {
             "等级规则": {
-                "5": ["遇境", 0],
-                "100": ["伊甸", 525600]
+                "20": ["暮土", 180],
+                "45": ["禁阁", 1440],
+                "70": ["伊甸", 7200],
+                "100": ["暴风眼", 10800]
             },
             "词库分贝": {
-                "广告": 5,
-                "涩涩": 3,
-                "侮辱": 10,
-                "建政": 10,
-                "非法": 20
+                "广告": 3,
+                "涩涩": 5,
+                "侮辱": 8,
+                "键政": 8,
+                "非法": 10
             },
             "回复方案": {
                 "0": "提示",
-                "10": "棉花"
+                "10": "棉花",
+                "30": "阴阳",
+                "45": "飞马"
             },
-            "记忆阈值": 50,
+            "记忆阈值": 20,
             "群缩放": 4
         }
     '''
 
 config = get_plugin_config(ConfigModel)
 '''配置项'''
+
+superusers = config.superusers
+'''SUPERUSER'''
+
+superusers_ignore = config.superusers_ignore
+'''超管忽略'''
 
 silencer_off = config.silencer_off
 '''消息检查开关 为True时禁用插件'''

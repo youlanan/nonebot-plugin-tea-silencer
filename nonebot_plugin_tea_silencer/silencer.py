@@ -3,27 +3,23 @@
 '''
 import re
 import asyncio
-from random import random, choice, randint
-from pathlib import Path
 try: import ujson as json
 except ImportError: import json
 from datetime import datetime, timedelta
-
+from pathlib import Path
+from random import random, choice
 from typing import Optional
-from nonebot.log import logger
-from nonebot.params import EventToMe
 from nonebot import get_driver, on_command
-from nonebot.params import CommandArg
+from nonebot.log import logger
+from nonebot.params import CommandArg, EventToMe
 from nonebot.message import event_preprocessor
 from nonebot.exception import IgnoredException
 from nonebot.permission import SUPERUSER
 from nonebot.adapters.onebot.v11 import (
-    GROUP_ADMIN,
-    GROUP_OWNER,
-    Bot,
     GroupMessageEvent,
+    MessageEvent,
     Message,
-    MessageEvent
+    Bot
     )
 from .config import *
 
@@ -103,7 +99,7 @@ class GlobalVar:
     用户缓存, 群缓存 = {}, {}
     ''' 短期记忆 {id: [0分贝, 1整数时间|0], 级别} '''
     
-    匹配词库 = {key: None for key in ['涩涩', '建政', '非法', '广告', '侮辱']}
+    匹配词库 = {key: None for key in ['涩涩', '键政', '非法', '广告', '侮辱']}
     ''' 示例: **if GlobalVar.["涩涩"].search(text):** '''
     
     词库分贝 = {}
@@ -229,9 +225,11 @@ async def 检测(bot: Bot, event: MessageEvent, at: bool = EventToMe()):
     if silencer_at and not at: return
     text = event.get_plaintext().strip()
     if not text: return
+    user_id = event.get_user_id()
+    if superusers_ignore and user_id in superusers: return
     group_id = event.group_id if isinstance(event, GroupMessageEvent) else None
     group_id = str(group_id) if group_id else None
-    user_id = event.get_user_id()
+    
     
     if echo := await 用户审查(user_id, group_id):
         await bot.send(event = event, message = echo)
@@ -482,7 +480,7 @@ driver = get_driver()
 async def _():
     async def 配置自检():
         配置列表 = {
-            'filter': ['涩涩', '建政', '非法', '广告', '侮辱'],
+            'filter': ['涩涩', '键政', '非法', '广告', '侮辱'],
             'flymo': ['提示', '棉花', '阴阳', '飞马']
         }
         tasks = [
@@ -501,10 +499,10 @@ async def _():
     await 配置自检()
 
     # 并发加载所有的正则表达式和回复语，优化加载效率
-    GlobalVar.匹配词库['涩涩'], GlobalVar.匹配词库['建政'], GlobalVar.匹配词库['非法'], \
+    GlobalVar.匹配词库['涩涩'], GlobalVar.匹配词库['键政'], GlobalVar.匹配词库['非法'], \
     GlobalVar.匹配词库['广告'], GlobalVar.匹配词库['侮辱'] = await asyncio.gather(
         加载正则('涩涩'),
-        加载正则('建政'),
+        加载正则('键政'),
         加载正则('非法'),
         加载正则('广告'),
         加载正则('侮辱')
