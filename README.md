@@ -76,4 +76,6 @@ _该项目仅用于学习交流、维护互联网环境健康和谐_
 
 >[互联网常用敏感词、停止词词库](https://github.com/fwwdn/sensitive-stop-words)
 
+>[反嘴臭、飞马令相关](https://github.com/tkgs0/nonebot-plugin-antiinsult/tree/main/nonebot_plugin_antiinsult)
+
 _（如果感觉代码很乱或者出现各种问题, 欢迎反馈纠错，期待您的创新~）_
