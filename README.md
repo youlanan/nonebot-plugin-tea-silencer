@@ -57,7 +57,8 @@ _该项目仅用于学习交流、维护互联网环境健康和谐_
 <details>
 <summary>下载 仓库源码 安装</summary>
 
-    下载仓库源码后, 将 nonebot_plugin_tea_silencer 丢进nb目录下的src/plugin目录下, 确保已正确配置nb可以载入该目录内的插件
+    下载仓库源码后, 将 nonebot_plugin_tea_silencer 丢进
+    nb目录下的src/plugin目录下, 确保已正确配置nb可以载入该目录内的插件
 
 </details>
 
