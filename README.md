@@ -131,9 +131,9 @@ silencer_config = """
     # 群缩放：一个群平均4人被屏蔽，便将该群做同样等级屏蔽
 ```
 ### 效果图
-<img src="https://github.com/youlanan/nonebot-plugin-tea-silencer/blob/main/img/%E5%90%AF%E5%8A%A8.webp" alt="效果图">
-<img src="https://github.com/youlanan/nonebot-plugin-tea-silencer/blob/main/img/%E6%8B%A6%E6%88%AA.webp" alt="效果图">
-<img src="https://github.com/youlanan/nonebot_plugin_megumin/blob/main/img/q.jpg" alt="茶话会">
+<img src="https://github.com/youlanan/nonebot-plugin-tea-silencer/blob/main/img/%E5%90%AF%E5%8A%A8.webp" width="300" height="120" alt="效果图">
+<img src="https://github.com/youlanan/nonebot-plugin-tea-silencer/blob/main/img/%E6%8B%A6%E6%88%AA.webp" width="300" height="120" alt="效果图">
+<img src="https://github.com/youlanan/nonebot_plugin_megumin/blob/main/img/q.jpg" width="300" height="700" alt="茶话会">
 
 ## 🚧 未来计划
 - [x] 优化性能
