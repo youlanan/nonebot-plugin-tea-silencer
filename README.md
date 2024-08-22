@@ -131,7 +131,7 @@ silencer_config = """
     # 群缩放：一个群平均4人被屏蔽，便将该群做同样等级屏蔽
 ```
 ### 效果图
-暂无
+[启动](https://github.com/youlanan/nonebot-plugin-tea-silencer/blob/main/img/%E5%90%AF%E5%8A%A8.webp)
 
 ## 🚧 未来计划
 - [x] 优化性能
