@@ -37,27 +37,27 @@ _该项目仅用于学习交流、维护互联网环境健康和谐_
 <summary>使用 nb-cli 安装</summary>
 在 nonebot2 项目的根目录下打开命令行, 输入以下指令即可安装
 
-    还在开发，没有上传
+    nb plugin install nonebot_plugin_tea_silencer
 
 </details>
 
 <details>
-<summary>pip</summary>
+<summary>使用 pip 安装</summary>
 
-    还在开发，没有上传
+    pip install nonebot_plugin_tea_silencer
 
 </details>
 
 打开 nonebot2 项目根目录下的 `pyproject.toml` 文件, 在 `[tool.nonebot]` 部分追加写入
 
-    plugins = ["还在开发，没有上传"]
+    plugins = ["nonebot_plugin_tea_silencer"]
 
 </details>
 
 <details>
-<summary>下载源码安装</summary>
+<summary>下载 仓库源码 安装</summary>
 
-    下载仓库源码后, 将 还在开发，没有上传 丢进nb目录下的src/plugin目录下, 确保已正确配置nb可以载入该目录内的插件
+    下载仓库源码后, 将 nonebot_plugin_tea_silencer 丢进nb目录下的src/plugin目录下, 确保已正确配置nb可以载入该目录内的插件
 
 </details>
 
