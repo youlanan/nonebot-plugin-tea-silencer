@@ -6,7 +6,7 @@ from nonebot.plugin import PluginMetadata
 
 __plugin_meta__ = PluginMetadata(
     name="消音器",
-    description="可以晋级的屏蔽词消息拦截插件，自动、手动两档拉黑用户与群聊，针对顽固污渍实施高效清洁",
+    description="可以晋级的屏蔽词消息拦截插件，自动、手动两档拉黑用户与群聊，针对顽固污渍实施自动化高效清洁",
     usage="""
     消音 [t 8-12位整数时间] [g 群id] [u 用户id]
     解除消音 [g 群id] [u 用户id]
