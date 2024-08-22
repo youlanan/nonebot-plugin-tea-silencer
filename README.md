@@ -31,6 +31,8 @@ _该项目仅用于学习交流、维护互联网环境健康和谐_
 
 本项目目前基于nonebot2与onebotv11协议
 
+测试环境为Python3.12
+
 <details>
 <summary>使用 nb-cli 安装</summary>
 在 nonebot2 项目的根目录下打开命令行, 输入以下指令即可安装
