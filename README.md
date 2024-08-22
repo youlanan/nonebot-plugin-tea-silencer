@@ -11,7 +11,7 @@
 
 _✨ 为美好群聊献上屏蔽 ✨_
 
-<img src="https://img.shields.io/badge/python-3.12+-blue.svg" alt="python">
+<img src="https://img.shields.io/badge/python-3.9+-blue.svg" alt="python">
 
 </div>
 
