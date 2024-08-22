@@ -1,4 +1,10 @@
 <div align="center">
+  <a href="https://github.com/youlanan/nonebot-plugin-tea-silencer"><img src="https://github.com/youlanan/nonebot-plugin-tea-silencer/blob/main/img/nbp_logo1.png" width="180" height="180" alt="nonebot-plugin-tea-silencer"></a>
+  <br>
+  <p><img src="https://github.com/A-kirami/nonebot-plugin-template/blob/resources/NoneBotPlugin.svg" width="240" alt="NoneBotPluginText"></p>
+</div>
+
+<div align="center">
 
 # nonebot-plugin-tea-silencer
 自动化、高自定义的违禁词检测、升级屏蔽级别插件
