@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "nonebot-plugin-tea-silencer"
+version = "1.0.0"
+description = "汤茶茶牌消音器，自动化拦截屏蔽不友好信息、高自定义、可升级屏蔽等级插件"
+authors = ["悠岚岸"]
+license = "MIT"
+readme = "README.md"
+packages = [{include = "nonebot_plugin_tea_silencer"}]
+homepage = "https://github.com/youlanan/nonebot-plugin-tea-silencer"
+repository = "https://github.com/youlanan/nonebot-plugin-tea-silencer"
+keywords = ["NoneBot", "silencer"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+nonebot2 = "^2.0.0"
+nonebot-adapter-onebot = "^2.2.0"
+pydantic = "^2.7.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
