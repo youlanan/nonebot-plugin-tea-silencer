@@ -1,6 +1,6 @@
 <div align="center">
   <a href="https://v2.nonebot.dev/store"><img src="./img/NoneBotPlugin.png" width="300" alt="logo" /></a>
-  <a href="https://github.com/youlanan/nonebot-plugin-tea-silencer"><img src="https://github.com/youlanan/nonebot-plugin-tea-silencer/blob/main/img/nbp_logo1.png" width="120" height="120" alt="nonebot-plugin-tea-silencer"></a>
+  <a href="https://github.com/youlanan/nonebot-plugin-tea-silencer"><img src="https://github.com/youlanan/nonebot-plugin-tea-silencer/blob/main/img/nbp_logo1.png" width="130" height="130" alt="nonebot-plugin-tea-silencer"></a>
 </div>
 
 <div align="center">
