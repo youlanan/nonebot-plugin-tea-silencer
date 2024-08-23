@@ -1,7 +1,9 @@
 <div align="center">
   <a href="https://github.com/youlanan/nonebot-plugin-tea-silencer"><img src="https://github.com/youlanan/nonebot-plugin-tea-silencer/blob/main/img/nbp_logo1.png" width="180" height="180" alt="nonebot-plugin-tea-silencer"></a>
   <br>
-  <p><img src="https://github.com/A-kirami/nonebot-plugin-template/blob/resources/NoneBotPlugin.svg" width="240" alt="NoneBotPluginText"></p>
+  <a href="https://v2.nonebot.dev/store">
+    <img src="./img/NoneBotPlugin.png" width="300" alt="logo" />
+  </a>
 </div>
 
 <div align="center">
