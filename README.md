@@ -4,9 +4,9 @@
 </div>
 
 <div align="center">
-# nonebot-plugin-tea-silencer
+nonebot-plugin-tea-silencer
 
-_✨ 为美好群聊献上屏蔽 ✨_
+_✨ 为祖安群聊献上屏蔽 ✨_
 
 <img src="https://img.shields.io/badge/python-3.9+-blue.svg" alt="python">
 </div>
