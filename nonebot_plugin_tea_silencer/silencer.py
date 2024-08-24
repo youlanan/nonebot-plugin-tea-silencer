@@ -2,6 +2,7 @@
 本体部分
 '''
 import re
+import shutil
 import asyncio
 try: import ujson as json
 except ImportError: import json
@@ -40,21 +41,15 @@ async def 储存JSON(path: Path, file: str, datas: dict = {}, 自检: Optional[b
     async def 路径自检(path: Path) -> None:
         if not path.parent.exists():
             path.parent.mkdir(parents=True, exist_ok=True)
-
-    async def 写入JSON(path: Path, datas: dict) -> None:
-        with open(path, 'w', encoding='utf-8') as data_file:
-            json.dump(datas, data_file, ensure_ascii=False, indent=4)
     
     try:
         await 路径自检(path)
         if 自检:
             if not path.exists():
-                await 路径自检(path)
-                await 写入JSON(path, datas)
+                await 更新JSON(path, datas)
                 await tolog(f"{file} 不存在，已自动创建喵")
             return
-        await 路径自检(path)
-        await 写入JSON(path, datas)
+        await 更新JSON(path, datas)
         await tolog(f"好耶！{file} 储存更新完毕！")
     except Exception as e:
         await tolog(f"不好了喵！储存 {file} 出错了喵", e)
@@ -93,7 +88,7 @@ async def 缓存本地化(阈值: int, 缓存: dict, file: str) -> None:
 class GlobalVar:
     ''' 全局变量类 '''
     
-    词库目录 = Path(__file__).parent / "silencer"
+    词库目录 = None
     ''' 插件数据存放路径 '''
 
     用户缓存, 群缓存 = {}, {}
@@ -478,6 +473,25 @@ driver = get_driver()
 
 @driver.on_startup
 async def _():
+    def 数据路径(转存: str):
+        初始路径 = Path(__file__).parent / "silencer"
+        默认路径 = Path.cwd() / "data" / "silencer"
+        if 初始路径.is_dir() and not 默认路径:
+            默认路径.mkdir(parents=True, exist_ok=True)
+            shutil.copytree(初始路径, 默认路径, dirs_exist_ok=True)
+            shutil.rmtree(初始路径)
+            return 默认路径
+        if 转存:
+            转存路径 = Path(转存)
+            return 转存路径
+        return 默认路径
+    
+    await tolog("正在加载插件数据")
+    if silencer_data_path:
+        await tolog("检测到自定义数据储存路径，请确保数据文件存在于指向目录")
+    GlobalVar.词库目录 = 数据路径(silencer_data_path)
+    
+    
     async def 配置自检():
         配置列表 = {
             'filter': ['涩涩', '键政', '非法', '广告', '侮辱'],

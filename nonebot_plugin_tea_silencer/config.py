@@ -16,6 +16,7 @@ class ConfigModel(BaseModel):
     silencer_off: bool = False          # 消息检查开关 为True时禁用插件
     silencer_at: bool = False           # 为True时必须艾特对话才触发
     silencer_safe: bool = True          # 为False时仅程序结束储存新增黑名单
+    silencer_data_path: str = ''        # 可自定义配置路径
     
     # 一份字符串格式的json，帮助完全自定义数值。
     silencer_config: str = '''
@@ -61,6 +62,9 @@ superusers = config.superusers
 
 silencer_safe = config.silencer_safe
 ''' 为 False 时仅程序结束时储存数据 '''
+
+silencer_data_path = config.silencer_data_path
+''' 为空时默认存放在nb运行目录下的data插件数据目录 '''
 
 
 def JSON反序列(data: str) -> Dict[Any, Any]:
