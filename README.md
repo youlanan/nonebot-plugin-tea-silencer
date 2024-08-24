@@ -157,7 +157,7 @@ silencer_config = """
 - [x] 超管可以自行增删屏蔽词
 - [x] 自动优化屏蔽词库
 - [ ] 可供其他插件调用方法（有空写，如果是为了检查待发送信息，不如用[这个插件](https://github.com/MelodyKnit/nonebot-plugin-blockwords)）
-- [x] 提交至nonebot商店 
+- [ ] 提交至nonebot商店 （延期，去学数据库插件）
 - [ ] 具有管理权限时禁言（一千年以后）
 - [ ] 适配更多适配器（三千年以后）
 
