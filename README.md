@@ -101,9 +101,11 @@ _✨ 为祖安群聊献上屏蔽 ✨_
 ```
 '''消音器相关配置'''
 
-superusers_ignore = True    # 为True忽略超管触发（避免删除屏蔽词被阻断）
-silencer_off: bool = False    # 消息检查开关 为True时禁用插件
-silencer_at: bool = False    # 为True时必须艾特bot对话才触发
+superusers_ignore = True        # 为True忽略超管触发（避免删除屏蔽词被阻断）
+silencer_off: bool = False      # 消息检查开关 为True时禁用插件
+silencer_at: bool = False       # 为True时必须艾特bot对话才触发
+silencer_data_path: str = ''    # 自定义插件数据（屏蔽词库和黑名单）存放目录
+                                # （默认存放在bot运行目录下data目录中）
 
     # 为False时仅在框架正常结束时转存黑名单为json 
     # 这将减少触发频繁时性能开销，但意外情况（如程序崩溃）
