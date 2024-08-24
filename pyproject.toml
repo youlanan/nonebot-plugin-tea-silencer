@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "nonebot-plugin-tea-silencer"
-version = "1.0.0"
+version = "1.0.1"
 description = "汤茶茶牌消音器，自动化拦截屏蔽不友好信息、高自定义、可升级屏蔽等级插件"
 authors = ["悠岚岸"]
 license = "MIT"
