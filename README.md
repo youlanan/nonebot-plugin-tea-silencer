@@ -82,7 +82,7 @@ _✨ 为祖安群聊献上屏蔽 ✨_
 ```
 
     superusers: Set[str] = []                      # NB的超管配置
-    superusers_ignore: bool = False                # 是否对忽略超管发言检查
+    superusers_ignore: bool = False                # 是否忽略对超管发言检查
     silencer_off: bool = False                     # 是否禁用插件
     silencer_at: bool = True                       # 是否需要@对话才触发
     silencer_safe: bool = False                    # 是否频繁同步黑名单到本地文件（默认仅程序正常结束运行时储存）
