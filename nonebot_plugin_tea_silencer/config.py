@@ -12,7 +12,7 @@ class ConfigModel(BaseModel):
     '''配置类'''
     
     superusers: Set[str] = []                      # NB的超管配置
-    superusers_ignore: bool = False                # 是否对忽略超管发言检查
+    superusers_ignore: bool = False                # 是否忽略超管发言的检查
     silencer_off: bool = False                     # 是否禁用插件
     silencer_at: bool = True                       # 是否需要@对话才触发
     silencer_safe: bool = False                    # 是否频繁保存黑名单到本地文件（False时仅在程序正常结束储存）
