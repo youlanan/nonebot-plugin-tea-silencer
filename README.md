@@ -151,9 +151,21 @@ _✨ 为祖安群聊献上屏蔽 ✨_
 注：如果给bot配置过指令前缀, 则触发指令为前缀+指令，我这里前缀是默认的“/”，否则参考指令表中格式。
 
 ### 效果图
-<img src="https://github.com/youlanan/nonebot-plugin-tea-silencer/blob/main/img/%E5%90%AF%E5%8A%A8.webp" width="300" height="120" alt="效果图">
-<img src="https://github.com/youlanan/nonebot-plugin-tea-silencer/blob/main/img/%E6%8B%A6%E6%88%AA.webp" width="300" height="90" alt="效果图">
-<img src="https://github.com/youlanan/nonebot_plugin_megumin/blob/main/img/q.jpg" width="300" height="500" alt="茶话会">
+<table>
+  <tr>
+    <td>
+      插件效果概览<br>
+      <img src="https://github.com/youlanan/nonebot-plugin-tea-silencer/blob/main/img/%E5%90%AF%E5%8A%A8.webp" width="300" height="120" alt="效果图"><br>
+      <img src="https://github.com/youlanan/nonebot-plugin-tea-silencer/blob/main/img/%E6%8B%A6%E6%88%AA.webp" width="300" height="60" alt="效果图"><br>
+      <img src="https://github.com/youlanan/nonebot-plugin-tea-silencer/blob/main/img/1.png" width="300" height="210" alt="效果图">
+    </td>
+    <td>
+      加群一起玩耍<br>
+      <img src="https://github.com/youlanan/nonebot_plugin_megumin/blob/main/img/q.jpg" width="300" height="500" alt="茶话会">
+    </td>
+  </tr>
+</table>
+
 
 ## 🚧 未来计划
 - [x] 优化性能
@@ -182,4 +194,4 @@ _✨ 为祖安群聊献上屏蔽 ✨_
 
 >[反嘴臭、飞马令相关](https://github.com/tkgs0/nonebot-plugin-antiinsult/tree/main/nonebot_plugin_antiinsult)
 
-_（如果感觉代码很乱或者出现各种问题, 欢迎反馈纠错，期待您的创新~）_
+_（本人没有系统学习过py，如果感觉代码很乱或者出现各种问题, 欢迎反馈纠错~）_
