@@ -5,18 +5,18 @@ try: import ujson as json
 except ImportError: import json
 from nonebot import get_plugin_config
 from pydantic import BaseModel
-from typing import Set, Any, Dict
+from typing import Optional, Set, Any, Dict
 
 
 class ConfigModel(BaseModel):
     '''配置类'''
     
-    superusers: Set[str] = []           # NB的超管配置
-    superusers_ignore: bool = True      # 超管忽略
-    silencer_off: bool = False          # 消息检查开关 为True时禁用插件
-    silencer_at: bool = False           # 为True时必须艾特对话才触发
-    silencer_safe: bool = True          # 为False时仅程序结束储存新增黑名单
-    silencer_data_path: str = ''        # 可自定义配置路径
+    superusers: Set[str] = []                      # NB的超管配置
+    superusers_ignore: bool = False                # 是否对忽略超管发言检查
+    silencer_off: bool = False                     # 是否禁用插件
+    silencer_at: bool = True                       # 是否需要@对话才触发
+    silencer_safe: bool = False                    # 是否频繁保存黑名单到本地文件（False时仅在程序正常结束储存）
+    silencer_data_path: Optional[str] = None       # 自定义的配置路径
     
     # 一份字符串格式的json，帮助完全自定义数值。
     silencer_config: str = '''
@@ -64,7 +64,7 @@ silencer_safe = config.silencer_safe
 ''' 为 False 时仅程序结束时储存数据 '''
 
 silencer_data_path = config.silencer_data_path
-''' 为空时默认存放在nb运行目录下的data插件数据目录 '''
+''' 为空时默认存放在localstore插件提供目录下 '''
 
 
 def JSON反序列(data: str) -> Dict[Any, Any]:

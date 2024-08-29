@@ -10,7 +10,7 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from random import random, choice
 from typing import Optional
-from nonebot import get_driver, on_command
+from nonebot import get_driver, require, on_command
 from nonebot.log import logger
 from nonebot.params import CommandArg, EventToMe
 from nonebot.message import event_preprocessor
@@ -24,6 +24,9 @@ from nonebot.adapters.onebot.v11 import (
     )
 from .config import *
 
+require("nonebot_plugin_localstore")
+
+import nonebot_plugin_localstore as store
 
 
 async def 更新JSON(path: Path, content: dict={}) -> None:
@@ -47,15 +50,15 @@ async def 储存JSON(path: Path, file: str, datas: dict = {}, 自检: Optional[b
         if 自检:
             if not path.exists():
                 await 更新JSON(path, datas)
-                await tolog(f"{file} 不存在，已自动创建喵")
+                tolog(f"{file} 不存在，已自动创建喵")
             return
         await 更新JSON(path, datas)
-        await tolog(f"好耶！{file} 储存更新完毕！")
+        tolog(f"好耶！{file} 储存更新完毕！")
     except Exception as e:
-        await tolog(f"不好了喵！储存 {file} 出错了喵", e)
+        tolog(f"不好了喵！储存 {file} 出错了喵", e)
 
 
-async def tolog(info: str, e=None) -> None:
+def tolog(info: str, e=None) -> None:
     if e:
         logger.error(f"[消音器] {info}: {e}")
         return
@@ -76,12 +79,12 @@ async def 整数转时间(时间: int) -> datetime:
 async def 缓存本地化(阈值: int, 缓存: dict, file: str) -> None:
     ''' 仅保留 **分贝>阈值 | 已被拉黑** 的群或用户 '''
     if not 缓存:
-        await tolog("当前拦截记录为空，不进行本地化储存喵")
+        tolog("当前拦截记录为空，不进行本地化储存喵")
         return
     path: Path = GlobalVar.词库目录 / 'decibel' / f'{file}.json'
     本地化 = {键: 值 for 键, 值 in 缓存.items() if 值[0] >= 阈值 or 值[1] != 0}
     if not 本地化:
-        await tolog("当前拦截记录均未达阈值，不进行本地化储存喵")
+        tolog("当前拦截记录均未达阈值，不进行本地化储存喵")
     await 储存JSON(path, file, 本地化)
 
 
@@ -141,7 +144,7 @@ async def 用户审查(user_id: str, group_id: Optional[str] = None) -> str | No
     
     # 继续屏蔽
     if (group_id and group_id in GlobalVar.群缓存) or (user_id in GlobalVar.用户缓存):
-        await tolog("已拦截黑名单群或用户的消息喵")
+        tolog("已拦截黑名单群或用户的消息喵")
         if random() < 0.3:
             return "哼——！"
         raise IgnoredException("已拦截黑名单群或用户的消息")
@@ -156,7 +159,7 @@ async def 消息审查(text: str, user_id: str, group_id: Optional[str] = None) 
     if 分贝 <= 0:
         return []
 
-    await tolog("已拦截不安全的消息喵")
+    tolog("已拦截不安全的消息喵")
     group_id = str(group_id) if group_id else None
 
     # 初始化缓存（若不存在）
@@ -433,10 +436,10 @@ async def 载入回复语(file: str) -> list:
     try:
         content = await 读取JSON(path)
         words = content[file]
-        await tolog(f"载入 {file} 回复语 x{len(words)}！")
+        tolog(f"载入 {file} 回复语 x{len(words)}！")
         return words
     except Exception as e:
-        await tolog(f"载入 {file} 回复语时出现意外情况", e)
+        tolog(f"载入 {file} 回复语时出现意外情况", e)
         return ["已过滤, Filter"]
 
 
@@ -445,12 +448,12 @@ async def 载入消音词(file: str) -> list:
     try:
         content = await 读取JSON(path)
         words = content[file]
-        await tolog(f"载入 {file} 消音词 x{len(words)}！")
+        tolog(f"载入 {file} 消音词 x{len(words)}！")
         if not words or len(words) <= 0:
             return ["test1消音"]
         return words
     except Exception as e:
-        await tolog(f"载入 {file} 消音词时出现意外情况", e)
+        tolog(f"载入 {file} 消音词时出现意外情况", e)
         return ["test1消音"]
 
 
@@ -460,10 +463,10 @@ async def 载入用户数据(file: str) -> dict:
         return {}
     try:
         content = await 读取JSON(path)
-        await tolog(f"载入 {file} 数据 x{len(content)}！")
+        tolog(f"载入 {file} 数据 x{len(content)}！")
         return content
     except Exception as e:
-        await tolog(f"载入 {file} 消音词时出现意外情况", e)
+        tolog(f"载入 {file} 消音词时出现意外情况", e)
         return {}
 
 
@@ -473,22 +476,32 @@ driver = get_driver()
 
 @driver.on_startup
 async def _():
-    def 数据路径(转存: str):
-        初始路径 = Path(__file__).parent / "silencer"
-        默认路径 = Path.cwd() / "data" / "silencer"
-        if 初始路径.is_dir() and not 默认路径:
-            默认路径.mkdir(parents=True, exist_ok=True)
-            shutil.copytree(初始路径, 默认路径, dirs_exist_ok=True)
-            shutil.rmtree(初始路径)
-            return 默认路径
-        if 转存:
-            转存路径 = Path(转存)
-            return 转存路径
-        return 默认路径
+    def 数据路径(配置转存: str):
+        tolog("正在加载插件数据")
+        安装路径 = Path(__file__).parent / "silencer"
+        # 默认路径: Path = Path.cwd() / "data" / "silencer"
+        # plugin_data_dir: Path = store.get_plugin_data_dir()
+        plugin_data = store.get_data_dir("nonebot_plugin_tea_silencer")
+        插件数据: Path = plugin_data / "silencer"
+        
+        if 配置转存:
+            tolog("检测到自定义词库储存路径，请确保数据文件存在于指向目录")
+            return Path(配置转存)
+        
+        elif 安装路径.is_dir() and not 插件数据.is_dir():
+            tolog(f"初始化，正在迁移插件数据至本地目录: \nfrom {安装路径} -> \nto {插件数据}")
+            插件数据.mkdir(parents=True, exist_ok=True)
+            shutil.copytree(安装路径, 插件数据, dirs_exist_ok=True)
+            shutil.rmtree(安装路径)
+            return 插件数据
+        
+        elif 插件数据.is_dir():
+            return 插件数据
+        
+        else:
+            tolog("载入插件词库时出错", f"找不到数据储存路径")
+            return None
     
-    await tolog("正在加载插件数据")
-    if silencer_data_path:
-        await tolog("检测到自定义数据储存路径，请确保数据文件存在于指向目录")
     GlobalVar.词库目录 = 数据路径(silencer_data_path)
     
     
