@@ -49,7 +49,7 @@ _✨ 为祖安群聊献上屏蔽 ✨_
 </details>
 
 <details>
-<summary>下载 仓库源码 安装</summary>
+<summary>下载 仓库源码 安装（较新）</summary>
 
     下载仓库源码后, 将 nonebot_plugin_tea_silencer 丢进
     nb目录下的src/plugin目录下, 确保已正确配置nb可以载入该目录内的插件
