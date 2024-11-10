@@ -550,8 +550,8 @@ async def _():
     GlobalVar.回复方案 = config["回复方案"]
     GlobalVar.记忆阈值 = config["记忆阈值"]
     GlobalVar.群缩放 = config["群缩放"]
-
-    asyncio.gather(
+    
+    GlobalVar.用户缓存, GlobalVar.群缓存 = await asyncio.gather(
         载入用户数据('小黑子'),
         载入用户数据('黑子窝'),
     )
